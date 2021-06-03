@@ -1,21 +1,29 @@
-name: 'Hello World'
-description: 'Greet someone'
+name: 'tar-and-upload-artifact'
+description: 'tar-and-upload-artifact'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  name:
+    description: 'artifact name'
+    required: false
+    default: 'artifact.tar.gz'
+  path:
+    description: 'dir path'
     required: true
-    default: 'World'
-outputs:
-  random-number:
-    description: "Random number"
-    value: ${{ steps.random-number-generator.outputs.random-id }}
+    default: '.'
+  retention-days:
+    description: 'retention-days'
+    required: false
+    default: 5
 runs:
   using: "composite"
   steps:
-    - run: echo Hello ${{ inputs.who-to-greet }}.
+    - run: tar -zcf ${{ inputs.name }} -C ${{ inputs.path }} .
       shell: bash
     - id: random-number-generator
-      run: echo "::set-output name=random-id::$(echo $RANDOM)"
+      uses: actions/upload-artifact@v2
+        with:
+          name: ${{ inputs.name }}
+          path: ${{ inputs.name }}
+          retention-days: ${{ inputs.retention-days }}
       shell: bash
-    - run: ${{ github.action_path }}/goodbye.sh
+    - run: rm -rf ${{ inputs.name }}
       shell: bash
