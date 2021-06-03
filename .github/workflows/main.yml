@@ -4,12 +4,9 @@ on:
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
-    name: A job to say hello
+    name: tar-and-upload-artifact
     steps:
     - uses: actions/checkout@v2
-    - id: hello
+    - id: test
       uses: ./
       with:
-        who-to-greet: 'Mona the Octocat'
-    - run: echo random-number ${{ steps.hello.outputs.random-number }}
-      shell: bash
